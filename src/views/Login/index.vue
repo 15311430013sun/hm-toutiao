@@ -58,26 +58,44 @@ export default {
   },
   methods: {
     login () {
-      // 整体表单验证
-      this.$refs.loginForm.validate(valid => {
+      // // 整体表单验证
+      // this.$refs.loginForm.validate(valid => {
+      //   if (valid) {
+      //     // 如果校验成功，登录，发送axios
+      //     this.$axios
+      //       .post(
+      //         'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+      //         this.loginForm
+      //       )
+      //       .then((res) => {
+      //         // 响应对象
+      //         const data = res.data
+      //         console.log(data)
+      //         // 保持登录状态 token
+      //         window.sessionStorage.setItem('hm-toutiao', JSON.stringify(res.data.data))
+      //         this.$router.push('/')
+      //       })
+      //       .catch(() => {
+      //         // 提示错误
+      //         this.$message.error('用户名或者密码错误')
+      //       })
+      //   }
+      // })
+      // 异步操作async与await
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          alert(valid)
-          // 如果校验成功，登录，发送axios
-          this.$axios
-            .post(
-              'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
-              this.loginForm
-            )
-            .then((res) => {
-              // 响应对象
-              const data = res.data
-              console.log(data)
-              this.$router.push('/')
-            })
-            .catch(() => {
-              // 提示错误
-              this.$message.error('用户名或者密码错误')
-            })
+          try {
+            const res = await this.$axios
+              .post(
+                'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
+                this.loginForm
+              )
+            window.sessionStorage.setItem('hm-toutiao', JSON.stringify(res.data.data))
+            this.$router.push('/')
+          } catch (err) {
+            // 提示错误
+            this.$message.error('用户名或者密码错误')
+          }
         }
       })
     }

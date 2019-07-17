@@ -3,7 +3,7 @@
     <el-aside class="my-aside" :width="isCollapse?'64px':'200px'">
       <div class="logo" :class="{close:isCollapse}"></div>
       <el-menu
-        default-active="1"
+        :default-active="$route.path"
         background-color="#002033"
         text-color="#fff"
         active-text-color="#ffd04b"
@@ -11,6 +11,7 @@
         :collapse="isCollapse"
         :collapse-transition="false"
         router
+
       >
         <el-menu-item index="/">
           <i class="el-icon-s-home"></i>
@@ -48,13 +49,13 @@
         <span class="text">江苏传智播客教育科技有限公司</span>
         <el-dropdown style="float:right">
           <span class="el-dropdown-link">
-            <img src="../../assets/images/avatar.jpg" alt />
-            <b>黑马小哥</b>
+            <img :src="avatar" alt />
+            <b>{{name}}</b>
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-unlock">退出登录</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-setting" @click.native="setting ()">个人设置</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-unlock" @click.native="exit ()">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-header>
@@ -70,12 +71,28 @@
 export default {
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      name: '',
+      avatar: ''
     }
+  },
+  created () {
+    const user = JSON.parse(window.sessionStorage.getItem('hm-toutiao'))
+    // console.log(user)
+    this.name = user.name
+    this.avatar = user.photo
   },
   methods: {
     toggleMenu () {
       this.isCollapse = !this.isCollapse
+    },
+    setting () {
+      this.$router.push('/setting')
+    },
+    exit () {
+      // 把token值删掉
+      window.sessionStorage.removeItem('hm-toutiao')
+      this.$router.push('/login')
     }
   }
 }
